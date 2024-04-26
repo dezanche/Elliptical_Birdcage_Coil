@@ -38,3 +38,46 @@ The coil has a hybrid topology in which one capacitor is connected in series to 
 The coil must operate in quadrature (circular polarization) at 128 MHz to be used in a 3 tesla MRI scanner and the RF magnetic field homogeneity must be similar to that of a comparable circular coil. Given the 3 planes of symmetry in this coil (XY, XZ, and YZ), of the 3 × 12 = 36 capacitors in the network only 7 unique values are needed, and the rest are obtained by mirror symmetry (note also that a hybrid circular coil requires only two distinct capacitor values).
 
 ### Full-wave simulation
+
+The coil was [modelled in Ansys HFSS](Elliptical_Birdcage_Coil_36ports.aedt) 2022R1 with the dimensions provided in Table 1. A lumped excitation port (50  characteristic impedance) was placed across each gap that will eventually host a capacitor in the network (36 ports in total). The simulation setup was a discrete frequency sweep from 100 MHz to 150 MHz in 2 MHz steps. A [touchstone file](Elliptical_Birdcage_Coil_36ports.s36p) containing the 36×36 S matrix ([*.s36p](Elliptical_Birdcage_Coil_36ports.s36p)) for each of these frequencies was exported and is shown below.
+
+![full S matrix](Images/Figure_4.png)
+
+Fields were exported for the solution at 128 MHz using a dedicated [VBS script](save_all_fields.vbs), creating one file for each port. Each field contains the H field (complex 3D vector) produced in a 300 × 200 mm2 rectangular region of the central transverse plane of the coil when the corresponding port is excited by 1W of incident power and the remaining ports are matched and not excited. The script was created using the “Tools > Record Script to File” dialog to record the actions needed to export the field from one port. A FOR loop is then added to cycle through all 36 ports by updating the vector of excitation powers with appropriate values.
+
+![single-port B fields](Images/b_field_128.00_MHz_xy_0.png)
+
+### Co-simulation
+
+The Python [script](optimize_Elliptical_Birdcage_Coil_128MHz.py) begins by importing the [touchstone file](Elliptical_Birdcage_Coil_36ports.s36p) and [fields](Coil_fields) using the appropriate functions included in the [CoSimPy](https://github.com/umbertozanovello/CoSimPy) package, then creating an RF_Coil object. The 7 distinct capacitance values are initialized along with the corresponding S parameters. Scattering matrices are also created for the two excitation ports which are located across the tuning capacitors on one end ring at the 12 and 3 o’clock positions. Scattering parameters or matrices for capacitors and ports are compiled in a list of 36 elements, each corresponding to one of the 36 ports in the simulation. The ```singlePortConnRFcoil``` method then takes the list and original ```RF_Coil``` object to create a new one corresponding to the birdcage coil populated by capacitors, with 2 connection ports. The ```em_field.b_field``` method provides the resulting RF magnetic field and the ```s_matrix.S``` method creates the S matrix seen from the two ports.
+
+![B1 before](Images/Figure_2.png)
+
+### Capacitor Optimization
+
+With the above information a cost function is readily created as the sum of a field homogeneity term and a resonant frequency term. The homogeneity term is the standard deviation of B<sub>1</sub><sup>+</sup> within an ellipse inscribed in the 300 × 200 mm<sup>2</sup> rectangular region over which the fields are exported. The resonant frequency term equals 100 × the RSS of the imaginary parts of the admittances seen at the coil’s two ports at 128 MHz. A simple local optimization algorithm (Nelder-Mead) was used because a good initial guess for the capacitances was available. More sophisticated algorithms like the genetic algorithm can be used if a more thorough search of the parameter space is required.
+
+
+### Results
+
+The optimization requires around 50 iterations and only a few seconds on a modern workstation. The resulting capacitance values and B<sub>1</sub><sup>+</sup> field magnitude plot are provided in the following table and figure, respectively.
+
+| Capacitor number | Capacitance [pF] |
+|---|---|
+|C1	| 23.8|
+|C2	| 21.6|
+|C3	| 16.8|
+|C4	| 15.2|
+|Cleg1	| 16.6|
+|Cleg2	| 13.3|
+|Cleg3	| 11.0|
+
+![B1 after](Images/Figure_11.png)
+
+Impedances seen from the coil ports (across end ring capacitors 1 and 4) are shown in the following figure, where resonances at 128 MHz are clearly visible.
+
+![Z plot](Images/Figure_7.png)
+
+Currents in the end ring capacitors at resonance are displayed below. The approximately (co)sinusoidal patterns confirm that these resonances are the correct modes, while highlighting the fact that deviations from the (co)sinusoidal patterns are necessary to achieve a homogeneous field with this geometry.
+
+![Z plot](Images/Figure_14.png)
