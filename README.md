@@ -85,9 +85,39 @@ Currents in the end ring capacitors at resonance are displayed below. The approx
 A final check was performed by running the [HFSS simulation again](Elliptical_Birdcage_Coil_final.aedt) with the optimal capacitances found above in place of the 36 ports. Field homogeneity and resonance spectra agree closely with those obtained by co-simulation.
 
 ![S parameters HFSS](Images/HFSS_S_parameters.png)
-![S parameters co-simulation](Images/Figure_7.svg)
+![S parameters co-simulation](Images/Figure_5.svg)
 
 ## Conclusion
 
 This example illustrates the power of co-simulation in RF coil design. The optimal capacitors are determined only from one full-wave simulation and a few seconds of post-processing using a modest PC, a simple Python script, and the open-source [CoSimPy library](https://github.com/umbertozanovello/CoSimPy).
 
+## References
+
+[1]	Mark C. Leifer, “Theory of the Quadrature Elliptic Birdcage Coil,” Magn Reson Med, vol. 38, no. 5, pp. 726–732, 1997.
+
+[2]	N. De Zanche and Peter S. Allen, “Sensitivity Calculations and Comparisons for Shielded Elliptical and Circular Birdcage Coils,” Magn Reson Med, vol. 47, no. 2, pp. 364–371, 2002.
+
+[3]	N. De Zanche, A. Yahya, F. E. Vermeulen, and P. S. Allen, “Analytical approach to noncircular section birdcage coil design: Verification with a Cassinian oval coil,” Magn Reson Med, vol. 53, no. 1, pp. 201–211, Jan. 2005, doi: 10.1002/mrm.20317.
+
+[4]	N. De Zanche and K. P. Pruessmann, “An algebraic method for asymmetric birdcage coil tuning,” presented at the Proceedings of the European Society for Magnetic Resonance in Medicine and Biology, 23rd annual meeting, 2006, p. 824.
+
+[5]	M. Kozlov and R. Turner, “Fast MRI coil analysis based on 3-D electromagnetic and RF circuit co-simulation,” Journal of Magnetic Resonance, vol. 200, no. 1, pp. 147–152, Sep. 2009, doi: 10.1016/j.jmr.2009.06.005.
+
+[6]	U. Zanovello, F. Seifert, O. Bottauscio, L. Winter, L. Zilberti, and B. Ittermann, “CoSimPy: An open-source python library for MRI radiofrequency Coil EM/Circuit Cosimulation,” Computer Methods and Programs in Biomedicine, vol. 216, p. 106684, Apr. 2022, doi: 10.1016/j.cmpb.2022.106684.
+
+[7]	M. S. Tong and X. Y. Li, Co-Simulations of Microwave Circuits and High-Frequency Electromagnetic Fields. Singapore: Springer Verlag, 2024.
+
+## Contributors
+
+- Nicola De Zanche
+- Dean Kuethe
+- Adam Maunder
+- Lauren Smart
+- [Umberto Zanovello](https://github.com/umbertozanovello/)
+
+## Licenses
+
+Designs and other CAD files are licensed under the CERN-OHL-W 2.0 license, version 2.0 or any later version.
+Software code is licensed under the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
+CClicense
+All other original content in this repository (including this README file) is licensed under a Creative Commons Attribution-NoDerivatives 4.0 International License.
