@@ -41,17 +41,17 @@ The coil must operate in quadrature (circular polarization) at 128 MHz to be use
 
 The coil was [modelled in Ansys HFSS](Elliptical_Birdcage_Coil_36ports.aedt) 2022R1 with the dimensions provided in Table 1. A lumped excitation port (50  characteristic impedance) was placed across each gap that will eventually host a capacitor in the network (36 ports in total). The simulation setup was a discrete frequency sweep from 100 MHz to 150 MHz in 2 MHz steps. A [touchstone file](Elliptical_Birdcage_Coil_36ports.s36p) containing the 36×36 S matrix ([*.s36p](Elliptical_Birdcage_Coil_36ports.s36p)) for each of these frequencies was exported and is shown below.
 
-![full S matrix](Images/Figure_4.png)
+![full S matrix](Images/Figure_4.svg)
 
 Fields were exported for the solution at 128 MHz using a dedicated [VBS script](save_all_fields.vbs), creating one file for each port. Each field contains the H field (complex 3D vector) produced in a 300 × 200 mm2 rectangular region of the central transverse plane of the coil when the corresponding port is excited by 1W of incident power and the remaining ports are matched and not excited. The script was created using the “Tools > Record Script to File” dialog to record the actions needed to export the field from one port. A FOR loop is then added to cycle through all 36 ports by updating the vector of excitation powers with appropriate values.
 
-![single-port B fields](Images/b_field_128.00_MHz_xy_0.png)
+![single-port B fields](Images/b_field_128.00_MHz_xy_0.svg)
 
 ### Co-simulation
 
 The Python [script](optimize_Elliptical_Birdcage_Coil_128MHz.py) begins by importing the [touchstone file](Elliptical_Birdcage_Coil_36ports.s36p) and [fields](Coil_fields) using the appropriate functions included in the [CoSimPy](https://github.com/umbertozanovello/CoSimPy) package, then creating an RF_Coil object. The 7 distinct capacitance values are initialized along with the corresponding S parameters. Scattering matrices are also created for the two excitation ports which are located across the tuning capacitors on one end ring at the 12 and 3 o’clock positions. Scattering parameters or matrices for capacitors and ports are compiled in a list of 36 elements, each corresponding to one of the 36 ports in the simulation. The ```singlePortConnRFcoil``` method then takes the list and original ```RF_Coil``` object to create a new one corresponding to the birdcage coil populated by capacitors, with 2 connection ports. The ```em_field.b_field``` method provides the resulting RF magnetic field and the ```s_matrix.S``` method creates the S matrix seen from the two ports.
 
-![B1 before](Images/Figure_2.png)
+![B1 before](Images/Figure_2.svg)
 
 ### Capacitor Optimization
 
@@ -72,12 +72,22 @@ The optimization requires around 50 iterations and only a few seconds on a moder
 |Cleg2	| 13.3|
 |Cleg3	| 11.0|
 
-![B1 after](Images/Figure_11.png)
+![B1 after](Images/Figure_11.svg)
 
 Impedances seen from the coil ports (across end ring capacitors 1 and 4) are shown in the following figure, where resonances at 128 MHz are clearly visible.
 
-![Z plot](Images/Figure_7.png)
+![Z plot](Images/Figure_7.svg)
 
 Currents in the end ring capacitors at resonance are displayed below. The approximately (co)sinusoidal patterns confirm that these resonances are the correct modes, while highlighting the fact that deviations from the (co)sinusoidal patterns are necessary to achieve a homogeneous field with this geometry.
 
-![Z plot](Images/Figure_14.png)
+![Z plot](Images/Figure_14.svg)
+
+A final check was performed by running the [HFSS simulation again](Elliptical_Birdcage_Coil_final.aedt) with the optimal capacitances found above in place of the 36 ports. Field homogeneity and resonance spectra agree closely with those obtained by co-simulation.
+
+![S parameters HFSS](Images/HFSS_S_parameters.png)
+![S parameters co-simulation](Images/Figure_7.svg)
+
+## Conclusion
+
+This example illustrates the power of co-simulation in RF coil design. The optimal capacitors are determined only from one full-wave simulation and a few seconds of post-processing using a modest PC, a simple Python script, and the open-source [CoSimPy library](https://github.com/umbertozanovello/CoSimPy).
+
