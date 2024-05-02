@@ -117,7 +117,7 @@ This example illustrates the power of co-simulation in RF coil design. The optim
 
 ## Licenses
 
-Designs and other CAD files are licensed under the CERN-OHL-W 2.0 license, version 2.0 or any later version.
-Software code is licensed under the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
-CClicense
-All other original content in this repository (including this README file) is licensed under a Creative Commons Attribution-NoDerivatives 4.0 International License.
+Designs and other CAD files are licensed under the [CERN-OHL-W 2.0 license](https://cern-ohl.web.cern.ch/), version 2.0 or any later version.\
+Software code is licensed under the terms of the [GNU General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) as published by the Free Software Foundation, either version 3 of the License, or any later version.\
+![CClicense](https://i.creativecommons.org/l/by-nd/4.0/88x31.png)\
+All other original content in this repository (including this README file) is licensed under a [Creative Commons Attribution-NoDerivatives 4.0 International License](https://creativecommons.org/licenses/by-nd/4.0/).
